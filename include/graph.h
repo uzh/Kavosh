@@ -36,6 +36,7 @@ public:
 	void DFSmain(Node * cur, char * str, int lev);
 	void Extract();
 	void calculateZSCORE(int RAND, int subgraphCounter, char *path);
+	void calculateNMOTIFS(int RAND, int subgraphCounter, char *path);
 	void print_adjMatrix(char * str);
 	int get_vertex();
 	
@@ -48,8 +49,8 @@ private:
 	int **E;
 	int h;
 	char *adjMat;
-	int rowSize;
-    int nV;
+	long rowSize;
+    	int nV;
 	int nE;
 	int nEd;
 	int maxDegree;

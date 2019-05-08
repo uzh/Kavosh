@@ -45,7 +45,7 @@ Graph::Graph(const int n, const int k) {
 	orbits = new int[subgraphSize];
 
 	head = 1;
-    nV = n;
+	nV = n;
 	nE = 0;
 	nEd = 0;
 	E_temp.resize(nV+1);
@@ -58,7 +58,7 @@ Graph::Graph(const int n, const int k) {
 
 	nauty_check(WORDSIZE, M, subgraphSize, NAUTYVERSIONID);
 	
-	rowSize = (int)ceil((float)nV/8);
+	rowSize = (long)ceil((float)nV/8);
 	adjMat = new char[rowSize*(nV+1)+1];
 	
 	for(i = 1; i <= nV; i++) {
@@ -525,9 +525,55 @@ void Graph::calculateZSCORE(int RAND, int subgraphCounter, char *path) {
 	fprintf(cm, "ID\t\tNUM IN REAL \t\t MEAN IN RANDOM \t VAR IN RANDOM \t\t ZSCORE\n");
 	for (i = 0; i < T->get_leafnum(); i++) {
 		if (var[i] != 0) 
-			fprintf(cm, "%d\t\t %f% \t\t %f% \t\t %f \t\t %f\n", ID[i], C_main[i+1]/subgraphCounter*100, mean[i]/subgraphCounter*100, var[i], Score[i]);
+			fprintf(cm, "%d\t\t %.2f \t\t %f \t\t %f \t\t %f\n", ID[i], C_main[i+1], mean[i], var[i], Score[i]);
 		if (var[i] == 0) 
-			fprintf(cm, "**%d\t\t %f% \t\t %f% \t\t %f \t\t %f \n", ID[i], C_main[i+1]/subgraphCounter*100, mean[i]/subgraphCounter*100, Score[i], double((C_main[i+1] - mean[i])));
+			fprintf(cm, "**%d\t\t %.2f \t\t %f \t\t %f \t\t %f \n", ID[i], C_main[i+1], mean[i], Score[i], double((C_main[i+1] - mean[i])));
+	}
+
+	fclose (cm);
+}
+
+/****************************************************************
+****************************************************************/
+
+void Graph::calculateNMOTIFS(int RAND, int subgraphCounter, char *path) {
+	FILE * cm;
+	int i , j;
+/*
+	for (i = 0; i < T->get_leafnum(); i++) {
+		mean[i] = mean[i]/RAND;
+		var[i] = sqrt((var[i]-(RAND*(mean[i]*mean[i])))/RAND);
+		
+		if(var[i] != 0)
+			Score[i] = (C_main[i+1] - mean[i])/var[i];
+		else
+			Score[i] = -1;
+	}
+*/
+    
+    char file[256];
+    sprintf(file, "%s/Motif_count.txt", path);
+    printf("Writing Motif counts to %s ...\n", file); 
+	cm = fopen(file, "w+");
+    if(!cm) {
+        printf("Can't open %s\n", path);
+        sprintf(file, "result/Motif_count.txt", path);
+        printf("Writing to %s instead ...\n", file); 
+    	cm = fopen(file, "w+");
+        if (!cm) {
+            printf("Error again ... Sorry!\n");
+            exit(-1);
+        }
+    }
+
+	//fprintf(cm, "TOTAL NUMBER OF CLASSES:: %f\n\n", enumerated_class);
+	fprintf(cm, "ID\t\tNUM IN REAL\n");
+	for (i = 0; i < T->get_leafnum(); i++) {
+		//if (var[i] != 0) 
+			fprintf(cm, "%d\t%.2f\n", ID[i], C_main[i+1]);
+		/*if (var[i] == 0) 
+			fprintf(cm, "**%d\t%.2f\n", ID[i], C_main[i+1]);
+		*/
 	}
 
 	fclose (cm);

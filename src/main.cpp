@@ -394,6 +394,8 @@ int main(int argc, char *argv[]) {
 printf("Avg. RAndom = %lld\n", (long long)((float)boz/num_random_graphs));
 	if (0 < num_random_graphs)
 		g->calculateZSCORE(num_random_graphs, subgraphCounterMain, output_directory);
+	else
+		g->calculateNMOTIFS(num_random_graphs, subgraphCounterMain, output_directory);
 		
 	for(i = 0; i < subgraphSize; i++) {
 		delete [] Index[i];
